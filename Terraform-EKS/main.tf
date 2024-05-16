@@ -33,12 +33,13 @@ module "vpc" {
 
 module "eks" {
   source                         = "terraform-aws-modules/eks/aws"
-  role_arn =  "arn:aws:iam::006432355300:role/eksClusterRole"
   cluster_name                   = "my-eks-cluster"
   cluster_version                = "1.29"
   cluster_endpoint_public_access = true
   vpc_id                         = module.vpc.vpc_id
   subnet_ids                     = module.vpc.private_subnets
+// Specified the IAM role ARN for the EKS cluster
+  eks_cluster_role_arn           = "arn:aws:iam::006432355300:role/eksClusterRole"
 
   eks_managed_node_groups = {
     nodes = {
