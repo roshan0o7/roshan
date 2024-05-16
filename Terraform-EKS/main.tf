@@ -33,6 +33,7 @@ module "vpc" {
 
 module "eks" {
   source                         = "terraform-aws-modules/eks/aws"
+  role_arn =  "arn:aws:iam::006432355300:role/eksClusterRole"
   cluster_name                   = "my-eks-cluster"
   cluster_version                = "1.29"
   cluster_endpoint_public_access = true
