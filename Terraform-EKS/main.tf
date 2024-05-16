@@ -38,8 +38,6 @@ module "eks" {
   cluster_endpoint_public_access = true
   vpc_id                         = module.vpc.vpc_id
   subnet_ids                     = module.vpc.private_subnets
-// Specified the IAM role ARN for the EKS cluster
-  eks_cluster_role_arn           = "arn:aws:iam::006432355300:role/eksClusterRole"
 
   eks_managed_node_groups = {
     nodes = {
@@ -47,6 +45,27 @@ module "eks" {
       max_size       = 3
       desired_size   = 2
       instance_types = var.instance_types
+    }
+  }
+# Cluster access entry
+  # To add the current caller identity as an administrator
+  enable_cluster_creator_admin_permissions = true
+
+  access_entries = {
+    # One access entry with a policy associated
+    example = {
+      kubernetes_groups = []
+      principal_arn     = "arn:aws:iam::006432355300:role/eksClusterRole"
+
+      policy_associations = {
+        example = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
+          access_scope = {
+            namespaces = ["default"]
+            type       = "namespace"
+          }
+        }
+      }
     }
   }
   tags = {
